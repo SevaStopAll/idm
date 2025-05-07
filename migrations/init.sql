@@ -2,7 +2,7 @@
 -- +goose StatementBegin
 CREATE TABLE employee
 (
-    id         bigint GENERATED ALWAYS AS IDENTITY,
+    id         bigint primary key GENERATED ALWAYS AS IDENTITY,
     name       text,
     created_at timestamptz default now(),
     updated_at timestamptz default now()
@@ -10,7 +10,7 @@ CREATE TABLE employee
 
 CREATE TABLE role
 (
-    id         bigint GENERATED ALWAYS AS IDENTITY,
+    id         bigint primary key GENERATED ALWAYS AS IDENTITY,
     name       text,
     created_at timestamptz default now(),
     updated_at timestamptz default now()
@@ -18,7 +18,7 @@ CREATE TABLE role
 
 CREATE TABLE employee_role
 (
-    id          bigint GENERATED ALWAYS AS IDENTITY,
+    id          bigint primary key GENERATED ALWAYS AS IDENTITY,
     employee_id bigint,
     role_id     bigint,
     created_at timestamptz default now()
