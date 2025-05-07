@@ -5,7 +5,7 @@ CREATE TABLE employee
     id         bigint GENERATED ALWAYS AS IDENTITY,
     name       text,
     created_at timestamptz default now(),
-    updated_at timestamptz
+    updated_at timestamptz default now()
 );
 
 CREATE TABLE role
@@ -13,7 +13,7 @@ CREATE TABLE role
     id         bigint GENERATED ALWAYS AS IDENTITY,
     name       text,
     created_at timestamptz default now(),
-    updated_at timestamptz
+    updated_at timestamptz default now()
 );
 
 CREATE TABLE employee_role
