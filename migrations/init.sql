@@ -3,24 +3,24 @@
 CREATE TABLE employee
 (
     id         bigint primary key GENERATED ALWAYS AS IDENTITY,
-    name       text,
-    created_at timestamptz default now(),
-    updated_at timestamptz default now()
+    name       text not null,
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
 );
 
 CREATE TABLE role
 (
     id         bigint primary key GENERATED ALWAYS AS IDENTITY,
-    name       text,
-    created_at timestamptz default now(),
-    updated_at timestamptz default now()
+    name       text not null,
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
 );
 
 CREATE TABLE employee_role
 (
     id          bigint primary key GENERATED ALWAYS AS IDENTITY,
-    employee_id bigint,
-    role_id     bigint,
+    employee_id bigint not null references employee(id),
+    role_id     bigint not null references role(id),
     created_at timestamptz default now()
 );
 -- +goose StatementEnd
