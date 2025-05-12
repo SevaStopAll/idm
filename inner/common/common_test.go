@@ -8,13 +8,14 @@ import (
 
 func Test_getConfig_withoutNeededFile(t *testing.T) {
 	config := GetConfig(".enx")
+
 	assert.Equal(t, "", config.Dsn)
 	assert.Equal(t, "", config.DbDriverName)
 }
 
 func Test_getConfig_withoutVars(t *testing.T) {
-
 	config := GetConfig(("test.env"))
+
 	assert.Equal(t, "", config.Dsn)
 	assert.Equal(t, "", config.DbDriverName)
 }
