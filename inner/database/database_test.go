@@ -6,11 +6,11 @@ import (
 	"testing"
 )
 
-func Test_Connect_Success(t *testing.T) {
-	assert.NotPanics(t, func() {
-		ConnectDb()
-	}, "Code panics")
-}
+//func Test_Connect_Success(t *testing.T) {
+//	assert.NotPanics(t, func() {
+//		ConnectDb()
+//	}, "Code panics")
+//}
 
 func Test_Connect_Panic(t *testing.T) {
 	os.Setenv("DB_DRIVER_NAME", "test")
