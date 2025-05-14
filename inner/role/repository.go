@@ -57,14 +57,23 @@ func (r *RoleRepository) FindByIds(ids []int64) (res []RoleEntity, err error) {
 func (r *RoleRepository) DeleteById(id int64) (err error) {
 
 	_, err = r.db.Query("DELETE from role where id = $1", id)
-	return err
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (r *RoleRepository) DeleteByIds(ids []int64) (err error) {
 	query, args, err := sqlx.In("DELETE from role where id IN(?)", ids)
+	if err != nil {
+		return err
+	}
 	query = r.db.Rebind(query)
 	_, err = r.db.Query(query, args...)
-	return err
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (r *RoleRepository) ExecuteQuery(query string) {

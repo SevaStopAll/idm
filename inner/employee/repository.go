@@ -36,7 +36,10 @@ func (r *EmployeeRepository) Save(employee EmployeeEntity) (id int64, err error)
 		return 0, err
 	}
 	if result.Next() {
-		result.Scan(&id)
+		err = result.Scan(&id)
+		if err != nil {
+			return 0, err
+		}
 		return id, err
 	}
 	return 0, err
@@ -44,27 +47,39 @@ func (r *EmployeeRepository) Save(employee EmployeeEntity) (id int64, err error)
 
 func (r *EmployeeRepository) FindByIds(ids []int64) (res []EmployeeEntity, err error) {
 	query, args, err := sqlx.In("SELECT * from employee where id IN(?)", ids)
-	query = r.db.Rebind(query)
-	rows, err := r.db.Queryx(query, args...)
-	for rows.Next() {
-		var employee EmployeeEntity
-		err = rows.StructScan(&employee)
-		res = append(res, employee)
+	if err != nil {
+		query = r.db.Rebind(query)
+		var rows *sqlx.Rows
+		rows, err = r.db.Queryx(query, args...)
+		for rows.Next() {
+			var employee EmployeeEntity
+			err = rows.StructScan(&employee)
+			res = append(res, employee)
+		}
+		return res, err
 	}
-	return res, err
+	return make([]EmployeeEntity, 0), err
 }
 
 func (r *EmployeeRepository) DeleteById(id int64) (err error) {
-
 	_, err = r.db.Query("DELETE from employee where id = $1", id)
-	return err
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (r *EmployeeRepository) DeleteByIds(ids []int64) (err error) {
 	query, args, err := sqlx.In("DELETE from employee where id IN(?)", ids)
+	if err != nil {
+		return err
+	}
 	query = r.db.Rebind(query)
 	_, err = r.db.Query(query, args...)
-	return err
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (r *EmployeeRepository) ExecuteQuery(query string) {
