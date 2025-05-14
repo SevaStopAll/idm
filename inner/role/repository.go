@@ -36,7 +36,10 @@ func (r *RoleRepository) Save(employee RoleEntity) (id int64, err error) {
 		return 0, err
 	}
 	if result.Next() {
-		result.Scan(&id)
+		err = result.Scan(&id)
+		if err != nil {
+			return 0, err
+		}
 		return id, err
 	}
 	return 0, err
@@ -45,7 +48,8 @@ func (r *RoleRepository) Save(employee RoleEntity) (id int64, err error) {
 func (r *RoleRepository) FindByIds(ids []int64) (res []RoleEntity, err error) {
 	query, args, err := sqlx.In("SELECT * from role where id IN(?)", ids)
 	query = r.db.Rebind(query)
-	rows, err := r.db.Queryx(query, args...)
+	var rows *sqlx.Rows
+	rows, err = r.db.Queryx(query, args...)
 	for rows.Next() {
 		var employee RoleEntity
 		err = rows.StructScan(&employee)
@@ -55,7 +59,6 @@ func (r *RoleRepository) FindByIds(ids []int64) (res []RoleEntity, err error) {
 }
 
 func (r *RoleRepository) DeleteById(id int64) (err error) {
-
 	_, err = r.db.Query("DELETE from role where id = $1", id)
 	if err != nil {
 		return err
