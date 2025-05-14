@@ -1,6 +1,7 @@
 package role
 
 import (
+	"fmt"
 	"github.com/jmoiron/sqlx"
 	"time"
 )
@@ -46,7 +47,10 @@ func (r *RoleRepository) Save(employee RoleEntity) (id int64, err error) {
 }
 
 func (r *RoleRepository) FindByIds(ids []int64) (res []RoleEntity, err error) {
-	query, args, err := sqlx.In("SELECT * from role where id IN(?)", ids)
+	query, args, err2 := sqlx.In("SELECT * from role where id IN(?)", ids)
+	if (err2 != nil) || (len(ids) == 0) {
+		return nil, fmt.Errorf("failed to find role by ids: %v", ids)
+	}
 	query = r.db.Rebind(query)
 	var rows *sqlx.Rows
 	rows, err = r.db.Queryx(query, args...)
