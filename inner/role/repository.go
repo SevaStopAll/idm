@@ -78,5 +78,8 @@ func (r *RoleRepository) DeleteByIds(ids []int64) (err error) {
 }
 
 func (r *RoleRepository) ExecuteQuery(query string) {
-	r.db.Exec(query)
+	_, err := r.db.Exec(query)
+	if err != nil {
+		return
+	}
 }

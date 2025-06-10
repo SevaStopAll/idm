@@ -80,5 +80,8 @@ func (r *EmployeeRepository) DeleteByIds(ids []int64) (err error) {
 }
 
 func (r *EmployeeRepository) ExecuteQuery(query string) {
-	r.db.Exec(query)
+	_, err := r.db.Exec(query)
+	if err != nil {
+		return
+	}
 }

@@ -103,17 +103,13 @@ func Test_DeleteByIds(t *testing.T) {
 	_, err4 := employeeRepository.Save(employee.EmployeeEntity{Name: "testName3"})
 	_, err5 := employeeRepository.Save(employee.EmployeeEntity{Name: "testName4"})
 	if err2 == nil && err3 == nil && err4 == nil && err5 == nil {
-		res, err := employeeRepository.FindAll()
-		if err != nil {
-			t.Fatal(err)
-		}
 		ids := make([]int64, 2)
 		ids[0], ids[1] = id1, id2
-		err = employeeRepository.DeleteByIds(ids)
+		err := employeeRepository.DeleteByIds(ids)
 		if err != nil {
 			t.Fatal(err)
 		}
-		res, err = employeeRepository.FindAll()
+		res, err := employeeRepository.FindAll()
 		if err != nil {
 			t.Fatal(err)
 		}
