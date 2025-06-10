@@ -37,9 +37,6 @@ func (r *EmployeeRepository) Save(employee EmployeeEntity) (id int64, err error)
 	}
 	if result.Next() {
 		err = result.Scan(&id)
-		if err != nil {
-			return 0, err
-		}
 		return id, err
 	}
 	return 0, err
@@ -47,13 +44,19 @@ func (r *EmployeeRepository) Save(employee EmployeeEntity) (id int64, err error)
 
 func (r *EmployeeRepository) FindByIds(ids []int64) (res []EmployeeEntity, err error) {
 	query, args, err := sqlx.In("SELECT * from employee where id IN(?)", ids)
-	if err != nil {
+	if err == nil {
 		query = r.db.Rebind(query)
 		var rows *sqlx.Rows
 		rows, err = r.db.Queryx(query, args...)
+		if err != nil {
+			return nil, err
+		}
 		for rows.Next() {
 			var employee EmployeeEntity
 			err = rows.StructScan(&employee)
+			if err != nil {
+				return nil, err
+			}
 			res = append(res, employee)
 		}
 		return res, err
@@ -63,10 +66,7 @@ func (r *EmployeeRepository) FindByIds(ids []int64) (res []EmployeeEntity, err e
 
 func (r *EmployeeRepository) DeleteById(id int64) (err error) {
 	_, err = r.db.Query("DELETE from employee where id = $1", id)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (r *EmployeeRepository) DeleteByIds(ids []int64) (err error) {
@@ -76,14 +76,9 @@ func (r *EmployeeRepository) DeleteByIds(ids []int64) (err error) {
 	}
 	query = r.db.Rebind(query)
 	_, err = r.db.Query(query, args...)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (r *EmployeeRepository) ExecuteQuery(query string) {
-	r.db.MustExec(query)
+	r.db.Exec(query)
 }
-
-//3. Написать интеграционные тесты, проверяющие работу API всех созданых репозиториев.
