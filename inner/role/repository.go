@@ -31,7 +31,7 @@ func (r *RoleRepository) FindAll() (res []RoleEntity, err error) {
 	return res, err
 }
 
-func (r *RoleRepository) Save(employee RoleEntity) (id int64, err error) {
+func (r *RoleRepository) Save(employee *RoleEntity) (id int64, err error) {
 	result, err := r.db.Query("INSERT INTO role (name) VALUES($1) RETURNING id", employee.Name)
 	if err != nil {
 		return 0, err
