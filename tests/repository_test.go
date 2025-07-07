@@ -82,16 +82,25 @@ func Test_Employees(t *testing.T) {
 	})
 
 	t.Run("delete employee by their ids", func(t *testing.T) {
-		var employeesId = fixture.Employees("Name1", "Name2")
-		ids := []int64{employeesId[0], employeesId[1]}
-		err1 := employeeRepository.DeleteByIds(ids)
-		if err1 != nil {
-			return
+		employeeRepository1 := employee.NewEmployeeRepository(database.ConnectDb())
+		id1, err2 := employeeRepository1.Save(&employee.EmployeeEntity{Name: "testName1"})
+		id2, err3 := employeeRepository1.Save(&employee.EmployeeEntity{Name: "testName2"})
+		_, err4 := employeeRepository1.Save(&employee.EmployeeEntity{Name: "testName3"})
+		_, err5 := employeeRepository1.Save(&employee.EmployeeEntity{Name: "testName4"})
+		if err2 == nil && err3 == nil && err4 == nil && err5 == nil {
+			ids := make([]int64, 2)
+			ids[0], ids[1] = id1, id2
+			err := employeeRepository1.DeleteByIds(ids)
+			if err != nil {
+				t.Fatal(err)
+			}
+			res, err := employeeRepository1.FindAll()
+			if err != nil {
+				t.Fatal(err)
+			}
+			assert.Equal(t, 2, len(res))
 		}
-		got, err := employeeRepository.FindAll()
-		a.Nil(err)
-		a.Empty(got)
-		employeeRepository.ExecuteQuery("DELETE FROM employee")
+		clearEmployeeDb()
 	})
 
 }
@@ -170,16 +179,30 @@ func Test_Roles(t *testing.T) {
 	})
 
 	t.Run("delete roles by their ids", func(t *testing.T) {
-		var rolesId = fixture.Roles("Name1", "Name2", "Name3", "Name4", "Name5")
-		ids := []int64{rolesId[0], rolesId[1]}
-		err1 := roleRepository.DeleteByIds(ids)
-		if err1 != nil {
-			return
+		roleRepository := role.NewRoleRepository(database.ConnectDb())
+		id1, err2 := roleRepository.Save(&role.RoleEntity{Name: "testRole1"})
+		id2, err3 := roleRepository.Save(&role.RoleEntity{Name: "testRole2"})
+		_, err4 := roleRepository.Save(&role.RoleEntity{Name: "testRole3"})
+		_, err5 := roleRepository.Save(&role.RoleEntity{Name: "testRole4"})
+		if err2 == nil && err3 == nil && err4 == nil && err5 == nil {
+			res, err := roleRepository.FindAll()
+			if err != nil {
+				t.Fatal(err)
+			}
+			assert.Equal(t, 4, len(res))
+			ids := make([]int64, 2)
+			ids[0], ids[1] = id1, id2
+			err = roleRepository.DeleteByIds(ids)
+			if err != nil {
+				t.Fatal(err)
+			}
+			res, err = roleRepository.FindAll()
+			if err != nil {
+				t.Fatal(err)
+			}
+			assert.Equal(t, 2, len(res))
 		}
-		got, err := roleRepository.FindAll()
-		a.Nil(err)
-		a.NotEmpty(got)
-		clearRoleDb()
+		roleRepository.ExecuteQuery("DELETE FROM role")
 	})
 
 }
