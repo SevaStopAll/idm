@@ -30,7 +30,7 @@ func (r *EmployeeRepository) FindAll() (res []EmployeeEntity, err error) {
 	return res, err
 }
 
-func (r *EmployeeRepository) Save(employee EmployeeEntity) (id int64, err error) {
+func (r *EmployeeRepository) Save(employee *EmployeeEntity) (id int64, err error) {
 	result, err := r.db.Query("INSERT INTO employee (name) VALUES($1) RETURNING id", employee.Name)
 	if err != nil {
 		return 0, err
